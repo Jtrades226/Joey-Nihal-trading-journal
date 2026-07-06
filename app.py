@@ -35,8 +35,8 @@ def load_data(user_sheet_name):
         return df
     except Exception:
         return pd.DataFrame(columns=[
-            "Trade ID", "Date", "Setup Type", "Direction", "Contracts", 
-            "Dollar PnL", "Points PnL", "News Day", "Discipline Grade", "Behavioral Tags", "Notes", "Screenshot Path"
+            "Trade ID", "Date", "Setup Type", "Direction", 
+             "Dollar PnL", "News Day", "Discipline Grade", "Behavioral Tags", "Notes", "Screenshot Path"
         ])
 
 df = load_data(selected_user)
@@ -104,7 +104,6 @@ with tab1:
             "Date": trade_date.strftime("%Y-%m-%d"),
             "Setup Type": setup_type if setup_type.strip() != "" else "Unspecified",
             "Direction": direction,
-            "Contracts": contracts,
             "Dollar PnL": round(dollar_pnl, 2),
             "News Day": news_day,
             "Discipline Grade": discipline_grade,
@@ -228,12 +227,11 @@ with tab3:
             with rev_col1:
                 st.markdown("### Session Context")
                 st.markdown(f"**Strategy Setup Applied:** `{trade_row['Setup Type']}`")
-                st.markdown(f"**Execution Vector:** {trade_row['Direction']} ({int(trade_row['Contracts'])} Contracts)")
 
                 session_pnl = trade_row['Dollar PnL']
                 session_color = "#2ECC71" if session_pnl >= 0 else "#E74C3C"
                 st.markdown(
-                    f"**Net Session Result:** <span style='color:{session_color}; font-weight:bold;'>${session_pnl}</span> ({trade_row['Points PnL']} NQ Points)",
+                    f"**Net Session Result:** <span style='color:{session_color}; font-weight:bold;'>${session_pnl}</span>",
                     unsafe_allow_html=True
                 )
 
