@@ -170,6 +170,7 @@ with tab2:
             "FOMO": 0,
             "Overconfidence": 0,
             "Failure to Recognize Bad Market Conditions": 0,
+            "Fear of Loss/Not trusting system": 0,
             "Random / Unbacktested Trade": 0
         }
         
