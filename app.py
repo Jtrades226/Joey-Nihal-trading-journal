@@ -195,7 +195,7 @@ with tab2:
         styled_df = (
             df.sort_values(by="Date", ascending=False)
             .drop(columns=["Trade ID", "Screenshot Path"])
-            .style.applymap(color_pnl, subset=["Dollar PnL"])
+            .style.map(color_pnl, subset=["Dollar PnL"])
         )
 
         st.dataframe(styled_df, use_container_width=True)
