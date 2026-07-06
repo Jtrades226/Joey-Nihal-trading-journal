@@ -4,9 +4,6 @@ from datetime import datetime
 import os
 from streamlit_gsheets import GSheetsConnection
 
-# NQ Multiplier: 1 full index point = $20 per contract
-NQ_MULTIPLIER = 20
-
 # Page layout configuration (Hiding sidebar entirely for a clean canvas)
 st.set_page_config(page_title="NQ Open Trading Journal", layout="wide", initial_sidebar_state="collapsed")
 
@@ -100,7 +97,6 @@ with tab1:
             with open(saved_img_path, "wb") as f:
                 f.write(uploaded_file.getbuffer())
                 
-        points_pnl = dollar_pnl / (NQ_MULTIPLIER * contracts)
         tags_string = ", ".join(selected_tags) if selected_tags else "None"
         
         new_data = pd.DataFrame([{
@@ -110,7 +106,6 @@ with tab1:
             "Direction": direction,
             "Contracts": contracts,
             "Dollar PnL": round(dollar_pnl, 2),
-            "Points PnL": round(points_pnl, 2),
             "News Day": news_day,
             "Discipline Grade": discipline_grade,
             "Behavioral Tags": tags_string,
