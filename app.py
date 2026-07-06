@@ -63,9 +63,8 @@ with tab1:
         
         with col_form1:
             trade_date = st.date_input("Trade Date", datetime.now())
-            setup_type = st.text_input("Setup / Strategy Type (Type anything, e.g., NQ Sweep)", value="")
+            setup_type = st.text_input("Confluences (Better be some good stuff (no 1sec IFVGs))", value="")
             direction = st.selectbox("Direction", ["Long", "Short"])
-            contracts = st.number_input("Contracts Size", min_value=1, value=1, step=1)
             dollar_pnl = st.number_input("Net Dollar PnL ($) (Use minus sign for losses)", value=0.0, step=50.0)
             
         with col_form2:
