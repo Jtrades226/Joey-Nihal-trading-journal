@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 import os
+from streamlit_gsheets import GSheetsConnection
 
 # NQ Multiplier: 1 full index point = $20 per contract
 NQ_MULTIPLIER = 20
@@ -16,32 +17,32 @@ st.caption("Joey and Nihals Profitable Ahh Journal | NY AM Session")
 USERS = ["Joey", "Nihal"]
 selected_user = st.selectbox("👤 Who's logging in?", USERS)
 
-CSV_FILE = f"nq_trading_journal_{selected_user}.csv"
 IMAGE_DIR = f"trade_images_{selected_user}"
 
 st.markdown(f"### Currently viewing: **{selected_user}'s Journal**")
 st.markdown("---")
 
-# Ensure required directories exist locally
+# Ensure required directories exist locally for temporary images
 if not os.path.exists(IMAGE_DIR):
     os.makedirs(IMAGE_DIR)
 
-if not os.path.exists(CSV_FILE):
-    df_init = pd.DataFrame(columns=[
-        "Trade ID", "Date", "Setup Type", "Direction", "Contracts", 
-        "Dollar PnL", "Points PnL", "News Day", "Discipline Grade", "Behavioral Tags", "Notes", "Screenshot Path"
-    ])
-    df_init.to_csv(CSV_FILE, index=False)
-
-# Helper function to load data safely
-def load_data():
+# Helper function to load data safely from Google Sheets
+def load_data(user_sheet_name):
     conn = st.connection("gsheets", type=GSheetsConnection)
-    # This reads the first sheet
-    df = conn.read(worksheet="Sheet1", ttl=0)
-    df = df.dropna(how="all") # Drop empty rows if any
-    return df
+    try:
+        # This reads the specific user's sheet (Joey or Nihal)
+        df = conn.read(worksheet=user_sheet_name, ttl=0)
+        df = df.dropna(how="all") # Drop empty rows if any
+        # Convert the Date column to proper datetime so your charts don't break
+        df["Date"] = pd.to_datetime(df["Date"])
+        return df
+    except Exception:
+        return pd.DataFrame(columns=[
+            "Trade ID", "Date", "Setup Type", "Direction", "Contracts", 
+            "Dollar PnL", "Points PnL", "News Day", "Discipline Grade", "Behavioral Tags", "Notes", "Screenshot Path"
+        ])
 
-def = load_data()
+df = load_data(selected_user)
 
 # --- THREE TOP TABS LAYOUT ---
 tab1, tab2, tab3 = st.tabs([
@@ -117,10 +118,14 @@ with tab1:
             "Screenshot Path": saved_img_path
         }])
         
-        new_data.to_csv(CSV_FILE, mode='a', header=False, index=False)
-        st.success("Trade data successfully written to your computer disk! Check out the Performance or Review tabs now.")
+        # Pushing to Google Sheets
+        conn = st.connection("gsheets", type=GSheetsConnection)
+        existing_df = load_data(selected_user)
+        updated_df = pd.concat([existing_df, new_data], ignore_index=True)
+        conn.update(worksheet=selected_user, data=updated_df)
+        
+        st.success("Trade data successfully written to Google Sheets! Check out the Performance or Review tabs now.")
         st.rerun()
-
 
 # ==========================================================
 # TAB 2: PERFORMANCE METRICS (Pure mathematical statistics)
@@ -197,7 +202,6 @@ with tab2:
         
     else:
         st.info(f"{selected_user}'s performance charts will generate automatically once there's a first recorded trade entry in the Log Session tab.")
-
 
 # ==========================================================
 # TAB 3: CHART REVIEWER (Full screen screenshot inspection)
