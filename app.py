@@ -120,7 +120,7 @@ with tab1:
         
         new_data.to_csv(CSV_FILE, mode='a', header=False, index=False)
         st.success("Trade data successfully written to your computer disk! Check out the Performance or Review tabs now.")
-        st.experimental_rerun()
+        st.rerun()
 
 
 # ==========================================================
