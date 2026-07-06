@@ -79,6 +79,7 @@ with tab1:
                 "FOMO", 
                 "Overconfidence", 
                 "Failure to Recognize Bad Market Conditions", 
+                "Fear of Loss/Not trusting system",
                 "Random / Unbacktested Trade"
             ]
             selected_tags = st.multiselect("Behavioral Tags (Select all that apply)", options=leak_options)
