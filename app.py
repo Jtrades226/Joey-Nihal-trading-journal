@@ -35,14 +35,13 @@ if not os.path.exists(CSV_FILE):
 
 # Helper function to load data safely
 def load_data():
-    df = pd.read_csv(CSV_FILE)
-    if not df.empty:
-        df["Date"] = pd.to_datetime(df["Date"])
-        df["Behavioral Tags"] = df["Behavioral Tags"].fillna("")
-        df["Screenshot Path"] = df["Screenshot Path"].fillna("None")
+    conn = st.connection("gsheets", type=GSheetsConnection)
+    # This reads the first sheet
+    df = conn.read(worksheet="Sheet1", ttl=0)
+    df = df.dropna(how="all") # Drop empty rows if any
     return df
 
-df = load_data()
+def = load_data()
 
 # --- THREE TOP TABS LAYOUT ---
 tab1, tab2, tab3 = st.tabs([
